@@ -45,6 +45,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     pkg-config \
     # Jupyter deps
     libzmq3-dev \
+    # Graphviz (graph rendering binaries)
+    graphviz \
     && rm -rf /var/lib/apt/lists/*
 
 # Symlink clang-18 as default clang
