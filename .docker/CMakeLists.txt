@@ -22,7 +22,7 @@ enable_testing()
 # Add each problem file here as you write them.
 # Pattern: one test binary per topic group.
 
-file(GLOB DSA_SOURCES "dsa/cpp/*.cpp")
+file(GLOB_RECURSE DSA_SOURCES "dsa/cpp/**/*.cpp")
 if(DSA_SOURCES)
     add_executable(dsa_tests ${DSA_SOURCES})
     target_link_libraries(dsa_tests GTest::gtest_main)

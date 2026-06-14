@@ -1,10 +1,10 @@
 # ============================================================
-# MiniDetect Dev Environment — x86_64 + CUDA 12.4 + RTX 3090
-# Host: Ubuntu 24.04, NVIDIA RTX 3090 (sm_86)
-# Future: see Dockerfile.jetson for arm64/Jetson (sm_87)
+# MiniDetect Dev Environment — x86_64 + CUDA 12.8 + RTX 3090
+# Host: Ubuntu 24.04, NVIDIA RTX 3090 (sm_86), driver 595+
+# Future: see .docker/Dockerfile.jetson for arm64/Jetson (sm_87)
 # ============================================================
 
-FROM nvidia/cuda:12.4.1-cudnn-devel-ubuntu24.04
+FROM nvidia/cuda:12.8.1-cudnn-devel-ubuntu24.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=America/Detroit
@@ -56,7 +56,7 @@ RUN update-alternatives --install /usr/bin/clang   clang   /usr/bin/clang-18   1
     update-alternatives --install /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-18 100
 
 # ── Python packages ────────────────────────────────────────
-COPY requirements.txt /tmp/requirements.txt
+COPY .docker/requirements.txt /tmp/requirements.txt
 RUN pip3 install --no-cache-dir --break-system-packages -r /tmp/requirements.txt
 
 # ── GoogleTest (for C++ DSA test harness) ──────────────────
@@ -78,9 +78,12 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /workspace
 
 # ── Non-root user matching your host UID (avoids file permission issues) ──
+# Ubuntu 24.04 base ships a default 'ubuntu' user at UID/GID 1000 — remove it first
 ARG UID=1000
 ARG GID=1000
-RUN groupadd -g ${GID} dev && \
+RUN userdel -r ubuntu 2>/dev/null || true && \
+    groupdel ubuntu 2>/dev/null || true && \
+    groupadd -g ${GID} dev && \
     useradd -m -u ${UID} -g ${GID} -s /bin/bash dev && \
     chown -R dev:dev /workspace
 

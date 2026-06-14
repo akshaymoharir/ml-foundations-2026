@@ -1,11 +1,12 @@
-# ── PyTorch — CUDA 12.4 wheels ────────────────────────────
-# RTX 3090 is fully supported by PyTorch 2.3 + cu124
---index-url https://download.pytorch.org/whl/cu124
-torch==2.3.1+cu124
-torchvision==0.18.1+cu124
+# ── PyTorch — CUDA 12.8 wheels ────────────────────────────
+# RTX 3090 is fully supported by PyTorch 2.7 + cu128
+# --index-url sets the primary index; --extra-index-url adds PyPI as fallback
+--index-url https://download.pytorch.org/whl/cu128
+--extra-index-url https://pypi.org/simple
+torch==2.7.0+cu128
+torchvision==0.22.0+cu128
 
 # ── Core ML / CV ───────────────────────────────────────────
---index-url https://pypi.org/simple
 numpy==1.26.4
 opencv-python-headless==4.10.0.84
 Pillow==10.3.0
@@ -19,9 +20,9 @@ tensorboard==2.17.0
 wandb==0.17.3           # optional: comment out if you don't use W&B yet
 
 # ── ONNX / export pipeline ─────────────────────────────────
-onnx==1.16.1
-onnxruntime-gpu==1.18.1  # for PTQ / INT8 benchmarking on desktop
-# onnxruntime==1.18.1    # swap this in for Jetson (CPU/TensorRT path instead)
+onnx==1.17.0
+onnxruntime-gpu==1.21.0  # for PTQ / INT8 benchmarking on desktop
+# onnxruntime==1.21.0    # swap this in for Jetson (CPU/TensorRT path instead)
 
 # ── Jupyter ────────────────────────────────────────────────
 jupyter==1.0.0
