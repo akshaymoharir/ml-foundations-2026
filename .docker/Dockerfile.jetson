@@ -1,0 +1,39 @@
+# ============================================================
+# MiniDetect — Jetson Orin Nano (arm64, sm_87)
+# Use when you reach Phase 2 of the C++ Staff plan.
+# ============================================================
+#
+# NOTES FOR WHEN YOU GET HERE:
+#
+# 1. Base image: use the official Jetson L4T PyTorch image from NVIDIA NGC
+#    rather than the generic cuda image — it ships with a PyTorch build
+#    that's already tuned for the Orin's iGPU/unified memory.
+#    Check: https://catalog.ngc.nvidia.com/orgs/nvidia/containers/l4t-pytorch
+#
+# 2. CUDA arch for Orin Nano = sm_87 (Ampere, same family as 3090 but different).
+#    Change: ENV TORCH_CUDA_ARCH_LIST="8.7"
+#            set(CMAKE_CUDA_ARCHITECTURES 87)
+#
+# 3. onnxruntime-gpu on Jetson uses the TensorRT execution provider, not CUDA EP.
+#    Swap onnxruntime-gpu for the arm64 wheel from Jetson Zoo:
+#    https://elinux.org/Jetson_Zoo#ONNX_Runtime
+#
+# 4. OpenCV: build from source on Jetson to get CUDA-accelerated ops.
+#    The apt package is CPU-only there.
+#
+# 5. Cross-compilation: if you want to build on x86 and push to Jetson,
+#    use docker buildx with --platform linux/arm64.
+#    Command: docker buildx build --platform linux/arm64 -f Dockerfile.jetson -t minidetect:jetson .
+#
+# 6. pip install on Jetson: many wheels don't have arm64 builds on PyPI.
+#    Use --find-links with Jetson-specific wheel repos where needed.
+#
+# Stub — fill in when the time comes:
+
+# FROM nvcr.io/nvidia/l4t-pytorch:r36.2.0-pth2.1-py3
+#
+# ENV DEBIAN_FRONTEND=noninteractive
+# ENV TORCH_CUDA_ARCH_LIST="8.7"
+# ENV CUDA_HOME=/usr/local/cuda
+#
+# ... (mirror Dockerfile structure, swap sm_86 → sm_87, swap onnxruntime)

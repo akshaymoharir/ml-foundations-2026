@@ -1,0 +1,72 @@
+# docker-compose.yml
+# Usage:
+#   Dev shell:  docker compose run --rm dev
+#   Jupyter:    docker compose up jupyter   → open http://localhost:8888
+#   Build only: docker compose build
+
+services:
+
+  # ── Base service (shared config) ─────────────────────────
+  base: &base
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+    image: minidetect:dev
+    volumes:
+      # Your repo mounted live — edits on host reflect instantly inside
+      - .:/workspace
+      # Persist pip cache across rebuilds
+      - pip-cache:/home/dev/.cache/pip
+      # Persist bash history inside container
+      - bash-history:/home/dev/.bash_history
+    environment:
+      - PYTHONPATH=/workspace
+      - CUDA_VISIBLE_DEVICES=0      # change if you have multiple GPUs
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  # ── Interactive dev shell ─────────────────────────────────
+  dev:
+    <<: *base
+    stdin_open: true
+    tty: true
+    command: bash
+
+  # ── Jupyter Lab ───────────────────────────────────────────
+  jupyter:
+    <<: *base
+    ports:
+      - "8888:8888"
+    command: >
+      jupyter lab
+        --ip=0.0.0.0
+        --port=8888
+        --no-browser
+        --NotebookApp.token=''
+        --NotebookApp.password=''
+        --notebook-dir=/workspace
+
+  # ── C++ build/test runner ─────────────────────────────────
+  # Usage: docker compose run --rm cpp-test
+  cpp-test:
+    <<: *base
+    command: >
+      bash -c "
+        cmake -S /workspace -B /workspace/build -G Ninja
+              -DCMAKE_BUILD_TYPE=Debug
+              -DCMAKE_EXPORT_COMPILE_COMMANDS=ON &&
+        cmake --build /workspace/build &&
+        cd /workspace/build && ctest --output-on-failure
+      "
+
+volumes:
+  pip-cache:
+  bash-history:
