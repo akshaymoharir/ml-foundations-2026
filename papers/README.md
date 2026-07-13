@@ -32,6 +32,7 @@ Notes are named by a short slug (e.g., `attention-is-all-you-need.md`). The inde
 
 | Title | Year | Description | Notes | Date Read |
 |-------|------|-------------|-------|-----------|
+| [VLDrive: Vision-Augmented Lightweight MLLMs for Efficient Language-grounded Autonomous Driving](https://arxiv.org/abs/2511.06256) | 2025 | Lightweight MLLM for autonomous driving using cycle-consistent dynamic visual pruning and distance-decoupled instruction attention, cutting parameters 81% (7B→1.3B) while improving closed-loop driving score in CARLA. | [notes](notes/vldrive.md) | — |
 
 ### Language Models & Scaling
 
